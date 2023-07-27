@@ -24,6 +24,9 @@ export const filterNotes = (notesCopy: Note[]): NoteStatsResult[] => {
           archive: acc[item.category]?.archive
             ? (acc[item.category]?.archive as number) + 1
             : 1,
+          active: acc[item.category]?.active
+            ? (acc[item.category]?.active as number)
+            : 0,
         },
       };
     } else {
@@ -35,6 +38,9 @@ export const filterNotes = (notesCopy: Note[]): NoteStatsResult[] => {
           active: acc[item.category]?.active
             ? (acc[item.category]?.active as number) + 1
             : 1,
+          archive: acc[item.category]?.archive
+            ? (acc[item.category]?.archive as number)
+            : 0,
         },
       };
     }

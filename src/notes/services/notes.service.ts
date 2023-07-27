@@ -156,7 +156,7 @@ export class NotesService {
     message: string;
   }> {
     try {
-      const filteredNotes = filterNotes(notesData);
+      const filteredNotes = filterNotes(notesDataCopy);
 
       return {
         notes: filteredNotes,
