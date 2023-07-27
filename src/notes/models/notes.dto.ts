@@ -1,12 +1,21 @@
-import { IsString, IsNotEmpty, IsDate, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsDate,
+  IsBoolean,
+  IsEnum,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
-import { NOTE_CATEGORIES } from './notes.interface';
+import { NotePayload } from './notes.interface';
 
-export class NoteDto {
-  @IsString()
-  @IsNotEmpty()
-  id: string;
+export enum NOTE_ENUM_CATEGORIES {
+  TASK = 'task',
+  IDEA = 'idea',
+  THOUGHT = 'thought',
+  QUOTE = 'quote',
+}
 
+export class NotePayloadDto implements NotePayload {
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -15,7 +24,8 @@ export class NoteDto {
   @Transform((value) => new Date(value.value)) // Transform string to Date
   created: Date;
 
-  category: NOTE_CATEGORIES;
+  @IsEnum(NOTE_ENUM_CATEGORIES)
+  category: NOTE_ENUM_CATEGORIES;
 
   @IsString()
   @IsNotEmpty()
@@ -23,4 +33,10 @@ export class NoteDto {
 
   @IsBoolean()
   isArchive: boolean;
+}
+
+export class NoteDto extends NotePayloadDto {
+  @IsString()
+  @IsNotEmpty()
+  id: string;
 }

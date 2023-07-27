@@ -1,3 +1,4 @@
+import { NOTE_ENUM_CATEGORIES } from './models/notes.dto';
 import { Note } from './models/notes.interface';
 
 export const notesData: Note[] = [
@@ -5,7 +6,7 @@ export const notesData: Note[] = [
     id: '1',
     name: 'Shopping list',
     created: new Date('2022-03-25'),
-    category: 'task',
+    category: NOTE_ENUM_CATEGORIES.TASK,
     content: 'Tomatoes, bread',
     isArchive: false,
   },
@@ -13,7 +14,7 @@ export const notesData: Note[] = [
     id: '2',
     name: 'Theory of evolution',
     created: new Date('2021-04-21'),
-    category: 'thought',
+    category: NOTE_ENUM_CATEGORIES.THOUGHT,
     content: 'The evolution',
     isArchive: false,
   },
@@ -21,7 +22,7 @@ export const notesData: Note[] = [
     id: '3',
     name: 'New Feature',
     created: new Date('2022-03-25'),
-    category: 'idea',
+    category: NOTE_ENUM_CATEGORIES.IDEA,
     content:
       'I’m gonna have a dentist appointment on the 3/5/2021, I moved it from 5/5/2021” the dates column is “3/5/2021, 5/5/2021',
     isArchive: false,
@@ -30,7 +31,7 @@ export const notesData: Note[] = [
     id: '4',
     name: 'William Gaddis',
     created: new Date('2022-03-25'),
-    category: 'quote',
+    category: NOTE_ENUM_CATEGORIES.QUOTE,
     content: "Power doesn't make",
     isArchive: false,
   },
@@ -38,7 +39,7 @@ export const notesData: Note[] = [
     id: '5',
     name: 'Books',
     created: new Date('2022-05-21'),
-    category: 'task',
+    category: NOTE_ENUM_CATEGORIES.TASK,
     content: 'The lean startup',
     isArchive: false,
   },
