@@ -1,18 +1,20 @@
+version: '3'
+
 services:
   api:
     build:
-      dockerfile: Dockerfile
       context: .
+      dockerfile: Dockerfile
     ports:
       - 3000:3000
     depends_on:
       - postgres
+    links:
+      - postgres:postgres
   postgres:
-    image: postgres
+    image: postgres:alpine
     restart: always
     environment:
-      POSTGRES_DB: $PGDATABASE
-      POSTGRES_USER: $PGUSER
-      POSTGRES_PASSWORD: $PGPASSWORD
-    ports:
-      - '5432:5432'
+      - POSTGRES_DB=$PGDATABASE
+      - POSTGRES_USER=$PGUSER
+      - POSTGRES_PASSWORD=$PGPASSWORD
