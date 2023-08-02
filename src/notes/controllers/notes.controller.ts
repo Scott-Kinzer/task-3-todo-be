@@ -46,7 +46,7 @@ export class NotesController {
         message: deletionResult.message,
       };
     } else {
-      throw new HttpException('Cannot delete note', HttpStatus.BAD_REQUEST);
+      throw new HttpException(deletionResult.message, HttpStatus.BAD_REQUEST);
     }
   }
 

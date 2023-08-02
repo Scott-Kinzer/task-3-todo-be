@@ -1,25 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { Note, NotePayload } from '../models/notes.interface';
-import { notesData } from '../data';
 import { v4 as uuid } from 'uuid';
 import { ResultService } from 'src/types';
 import { NoteStatsResult, filterNotes } from 'src/helpers/filterNotes';
-
-let notesDataCopy = notesData;
+import { InjectModel } from '@nestjs/sequelize';
+import { NotesRepository } from '../repositories/notes.repository';
 
 @Injectable()
 export class NotesService {
+  constructor(
+    @InjectModel(NotesRepository)
+    private notesRepository: typeof NotesRepository,
+  ) {}
   async createNote(
-    user: NotePayload,
+    note: NotePayload,
   ): Promise<{ note: Note | null; status: ResultService; message: string }> {
     try {
       const uniqueId = uuid();
 
-      notesDataCopy.push({ ...user, id: uniqueId });
+      const createdNote = await this.notesRepository.create({
+        ...note,
+        id: uniqueId,
+      });
 
-      if (notesDataCopy[notesDataCopy.length - 1]) {
+      if (createdNote) {
         return {
-          note: notesDataCopy[notesDataCopy.length - 1],
+          note: createdNote,
           status: ResultService.SUCCESS,
           message: 'Note created',
         };
@@ -43,11 +49,13 @@ export class NotesService {
     id: string,
   ): Promise<{ status: ResultService; message: string }> {
     try {
-      const currentNote = notesDataCopy.find((note) => note.id == id);
+      const removeResult = await this.notesRepository.destroy({
+        where: { id },
+      });
 
-      if (currentNote) {
-        notesDataCopy = notesDataCopy.filter((note) => note.id !== id);
+      console.log(removeResult);
 
+      if (removeResult === 1) {
         return { status: ResultService.SUCCESS, message: 'Note deleted' };
       } else {
         return { status: ResultService.FAILED, message: 'Note not exists' };
@@ -67,22 +75,18 @@ export class NotesService {
     delete updatedNote.id;
 
     try {
-      notesDataCopy = notesDataCopy.map((note) => {
-        if (note.id === id) {
-          return {
-            ...note,
-            ...updatedNote,
-          };
-        } else {
-          return note;
-        }
-      });
+      const updatedNoteResult = await this.notesRepository.update(
+        {
+          ...updatedNote,
+        },
+        { where: { id } },
+      );
 
-      const note = notesDataCopy.find((note) => note.id === id);
+      const updatedNoteObject = await this.getNote(id);
 
-      if (note) {
+      if (updatedNoteResult) {
         return {
-          note: note,
+          note: updatedNoteObject.note,
           status: ResultService.SUCCESS,
           message: 'Note updated',
         };
@@ -90,7 +94,7 @@ export class NotesService {
         return {
           note: null,
           status: ResultService.FAILED,
-          message: 'Note not exists',
+          message: 'Cannot update note',
         };
       }
     } catch {
@@ -106,7 +110,7 @@ export class NotesService {
     id: string,
   ): Promise<{ note: Note | null; status: ResultService; message: string }> {
     try {
-      const currentNote = notesDataCopy.find((note) => note.id == id);
+      const currentNote = await this.notesRepository.findOne({ where: { id } });
 
       if (currentNote) {
         return {
@@ -136,8 +140,10 @@ export class NotesService {
     message: string;
   }> {
     try {
+      const notes = await this.notesRepository.findAll();
+
       return {
-        notes: notesDataCopy,
+        notes: notes,
         status: ResultService.SUCCESS,
         message: 'Notes finded',
       };
@@ -156,13 +162,23 @@ export class NotesService {
     message: string;
   }> {
     try {
-      const filteredNotes = filterNotes(notesDataCopy);
+      const notesResult = await this.getNotes();
 
-      return {
-        notes: filteredNotes,
-        status: ResultService.SUCCESS,
-        message: 'Notes stats',
-      };
+      if (notesResult.status === ResultService.SUCCESS) {
+        const filteredNotes = filterNotes(notesResult.notes);
+
+        return {
+          notes: filteredNotes,
+          status: ResultService.SUCCESS,
+          message: 'Notes stats',
+        };
+      } else {
+        return {
+          notes: null,
+          status: ResultService.FAILED,
+          message: 'Something went wrong...',
+        };
+      }
     } catch {
       return {
         notes: null,

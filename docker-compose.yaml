@@ -5,6 +5,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      - POSTGRES_DB=$PG_DATABASE
+      - POSTGRES_USER=$PG_USER
+      - POSTGRES_PASSWORD=$PG_PASSWORD
+      - POSTGRES_HOST=$PG_HOST
     volumes:
       - ./:/usr/src/app
       - /usr/src/app/node_modules
@@ -16,12 +21,11 @@ services:
       - postgres:postgres
   postgres:
     image: postgres:alpine
-    container_name: local_pgdb
     restart: always
     environment:
-      - POSTGRES_DB=$PGDATABASE
-      - POSTGRES_USER=$PGUSER
-      - POSTGRES_PASSWORD=$PGPASSWORD
+      - POSTGRES_DB=$PG_DATABASE
+      - POSTGRES_USER=$PG_USER
+      - POSTGRES_PASSWORD=$PG_PASSWORD
   pgadmin:
     container_name: pgadmin4_container
     image: dpage/pgadmin4
