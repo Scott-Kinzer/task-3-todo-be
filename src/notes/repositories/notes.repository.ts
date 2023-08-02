@@ -8,7 +8,7 @@ import {
 import { NOTE_ENUM_CATEGORIES } from '../models/notes.dto';
 import { Note } from '../models/notes.interface';
 
-@Table
+@Table({ timestamps: false, omitNull: true })
 export class NotesRepository extends Model<Note> {
   @PrimaryKey
   @Column({
