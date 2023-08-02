@@ -5,8 +5,6 @@ import { NotesModule } from './notes/notes.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { NotesRepository } from './notes/repositories/notes.repository';
 
-console.log(process.env.PG_USER);
-
 @Module({
   imports: [
     SequelizeModule.forRoot({

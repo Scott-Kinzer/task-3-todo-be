@@ -53,8 +53,6 @@ export class NotesService {
         where: { id },
       });
 
-      console.log(removeResult);
-
       if (removeResult === 1) {
         return { status: ResultService.SUCCESS, message: 'Note deleted' };
       } else {
