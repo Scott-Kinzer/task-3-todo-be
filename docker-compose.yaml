@@ -16,8 +16,18 @@ services:
       - postgres:postgres
   postgres:
     image: postgres:alpine
+    container_name: local_pgdb
     restart: always
     environment:
       - POSTGRES_DB=$PGDATABASE
       - POSTGRES_USER=$PGUSER
       - POSTGRES_PASSWORD=$PGPASSWORD
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=$EMAIL_USER
+      - PGADMIN_DEFAULT_PASSWORD=$EMAIL_USER_PASSWORD
+    ports:
+      - '5050:80'
